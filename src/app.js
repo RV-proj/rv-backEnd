@@ -1,16 +1,21 @@
+// Import required modules
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
+import helmet from "helmet";
 
+// Load environment variables
 dotenv.config();
 
+// Initialize Express app
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(helmet());
 
 // Routes
 app.get("/", (req, res) => {
