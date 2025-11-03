@@ -19,7 +19,7 @@ app.use(morgan("dev"));
 app.use(helmet());
 
 // Routes
-app.use(testRoute);
+app.use("/", testRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
