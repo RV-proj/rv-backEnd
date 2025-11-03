@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
+import testRoute from "../src/routes/Test.Routes.js";
 
 // Load environment variables
 dotenv.config();
@@ -18,9 +19,7 @@ app.use(morgan("dev"));
 app.use(helmet());
 
 // Routes
-app.get("/", (req, res) => {
-  res.send("Testing api.");
-});
+app.use(testRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
