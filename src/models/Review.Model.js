@@ -8,4 +8,15 @@ async function getAllReviews() {
   return data;
 }
 
-export default { getAllReviews };
+// post
+async function createReview(review, userName) {
+  const { data, error } = await supabase
+    .from("reviews")
+    .insert(review, userName)
+    .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export default { getAllReviews, createReview };

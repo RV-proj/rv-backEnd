@@ -3,9 +3,11 @@ import reviewController from "../controllers/Review.Controllers.js";
 
 const router = express.Router();
 
+// get
 router.get("/", reviewController.getReviews);
 
-router.post("/", (req, res, next) => {});
+// post
+router.post("/", reviewController.addReview);
 
 router.delete("/", (req, res, next) => {});
 
