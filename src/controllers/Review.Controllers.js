@@ -1,5 +1,6 @@
 import reviewModel from "../models/Review.Model.js";
 
+// get
 function getReviews(req, res, next) {
   try {
     const allReviews = reviewModel.getAllReviews();
