@@ -1,11 +1,11 @@
-const review = [
-  {
-    id: "01",
-  },
-];
+import supabase from "../config/supabase.js";
 
-function getAllReviews() {
-  return review;
+// get
+async function getAllReviews() {
+  const { data, error } = await supabase.from("reviews").select("*");
+
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 export default { getAllReviews };
