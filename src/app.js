@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-import testRoute from "../src/routes/Test.Routes.js";
 import reviewRoute from "../src/routes/Review.Routes.js";
 
 // Initialize Express app
@@ -16,7 +15,6 @@ app.use(morgan("dev"));
 app.use(helmet());
 
 // Routes
-app.use("/", testRoute);
 app.use("/review", reviewRoute);
 
 // Error handling middleware
