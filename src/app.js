@@ -1,14 +1,10 @@
 // Import required modules
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import testRoute from "../src/routes/Test.Routes.js";
 import reviewRoute from "../src/routes/Review.Routes.js";
-
-// Load environment variables
-dotenv.config();
 
 // Initialize Express app
 const app = express();
