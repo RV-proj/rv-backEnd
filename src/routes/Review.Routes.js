@@ -9,6 +9,7 @@ router.get("/", reviewController.getReviews);
 // post
 router.post("/", reviewController.addReview);
 
-router.delete("/", (req, res, next) => {});
+// delete
+router.delete("/:id", reviewController.deleteReview);
 
 export default router;

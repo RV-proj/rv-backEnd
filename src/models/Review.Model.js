@@ -19,4 +19,16 @@ async function createReview(review, userName) {
   return data;
 }
 
-export default { getAllReviews, createReview };
+// delete
+async function deleteReview(id) {
+  const { data, error } = await supabase
+    .from("reviews")
+    .delete()
+    .eq("id", id)
+    .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export default { getAllReviews, createReview, deleteReview };
