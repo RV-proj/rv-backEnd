@@ -1,4 +1,4 @@
-import TiresModel from "../models/Tires.Model.js";
+import TiresModel from "../models/Tiers.Model.js";
 
 // get
 async function getTires(req, res, next) {

@@ -1,5 +1,5 @@
 import express from "express";
-import TiresController from "../controllers/Tires.Controller.js";
+import TiresController from "../controllers/Tiers.Controller.js";
 
 const router = express.Router();
 

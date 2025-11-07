@@ -4,7 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import reviewRoute from "../src/routes/Review.Routes.js";
-import tiresRoute from "../src/routes/Tires.Routes.js";
+import tiresRoute from "./routes/TiersRoutes.js";
 
 // Initialize Express app
 const app = express();
