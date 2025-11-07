@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import reviewRoute from "../src/routes/Review.Routes.js";
+import tiresRoute from "../src/routes/Tires.Routes.js";
 
 // Initialize Express app
 const app = express();
@@ -15,7 +16,9 @@ app.use(morgan("dev"));
 app.use(helmet());
 
 // Routes
+// review
 app.use("/review", reviewRoute);
+app.use("/tiers", tiresRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
