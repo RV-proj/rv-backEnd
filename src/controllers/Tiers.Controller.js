@@ -12,4 +12,10 @@ async function getTires(req, res, next) {
   }
 }
 
+// post
+async function addTires(req, res, next) {
+  try {
+  } catch (err) {}
+}
+
 export default { getTires };

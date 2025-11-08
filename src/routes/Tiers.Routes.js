@@ -6,4 +6,7 @@ const router = express.Router();
 // get
 router.get("/", TiresController.getTires);
 
+// post
+
+
 export default router;
