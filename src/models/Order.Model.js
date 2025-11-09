@@ -29,7 +29,7 @@ async function createOrder(
       size,
       quality,
       deliveryAddress,
-      price,
+      price,  
       status,
       productName
     )
