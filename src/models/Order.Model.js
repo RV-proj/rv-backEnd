@@ -8,4 +8,78 @@ async function getAllOrder() {
   return data;
 }
 
-export default { getAllOrder };
+// post
+async function createOrder(
+  email,
+  name,
+  phone,
+  size,
+  quality,
+  deliveryAddress,
+  productName,
+  price,
+  status
+) {
+  const { data, error } = await supabase
+    .from("orders")
+    .insert(
+      email,
+      name,
+      phone,
+      size,
+      quality,
+      deliveryAddress,
+      price,
+      status,
+      productName
+    )
+    .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// delete
+async function deleteOrder(id) {
+  const { data, error } = await supabase
+    .from("orders")
+    .delete()
+    .eq("id", id)
+    .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// update
+async function updatedOrder(id, updatedData) {
+  const { data, error } = await supabase
+    .from("orders")
+    .update(updatedData)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// get user by id
+async function singleOrder(id) {
+  const { data, error } = await supabase
+    .from("orders")
+    .select()
+    .eq("id", id)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export default {
+  getAllOrder,
+  createOrder,
+  deleteOrder,
+  updatedOrder,
+  singleOrder,
+};
