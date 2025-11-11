@@ -43,8 +43,6 @@ async function deleteReview(req, res, next) {
 
     const deletedReview = await reviewModel.deleteReview(id);
 
-    console.log(deleteReview);
-
     if (!deletedReview || deletedReview.length === 0) {
       return res.status(404).json({ message: "Review not found" });
     }
