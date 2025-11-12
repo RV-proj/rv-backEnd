@@ -16,9 +16,10 @@ async function createOrder(
   size,
   quality,
   deliveryAddress,
-  productName,
   price,
-  status
+  startDate,
+  endDate,
+  quantity
 ) {
   const { data, error } = await supabase
     .from("orders")
@@ -29,9 +30,10 @@ async function createOrder(
       size,
       quality,
       deliveryAddress,
-      price,  
-      status,
-      productName
+      price,
+      startDate,
+      endDate,
+      quantity
     )
     .select();
 

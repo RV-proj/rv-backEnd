@@ -19,24 +19,26 @@ async function postOrder(req, res, next) {
       email,
       name,
       phone,
-      productName,
       size,
       quality,
       deliveryAddress,
       price,
-      status,
+      startDate,
+      endDate,
+      quantity,
     } = req.body;
 
     const newOrder = await orderModel.createOrder({
       email,
       name,
       phone,
-      productName,
       size,
       quality,
       deliveryAddress,
       price,
-      status,
+      startDate,
+      endDate,
+      quantity,
     });
 
     res.status(201).json(newOrder);
