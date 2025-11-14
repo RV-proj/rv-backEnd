@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-import cookieParser from "cookie-parser";
 import reviewRoute from "../src/routes/Review.Routes.js";
 import orderRoute from "../src/routes/Order.Router.js";
 import userRoute from "../src/routes/User.Route.js";
@@ -24,7 +23,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(cookieParser());
+
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
