@@ -29,7 +29,7 @@ async function createOrder(
       size,
       quality,
       deliveryAddress,
-      price,  
+      price,
       status,
       productName
     )
@@ -65,12 +65,11 @@ async function updatedOrder(id, updatedData) {
 }
 
 // get user by id
-async function singleOrder(id) {
+async function singleOrder(email) {
   const { data, error } = await supabase
     .from("orders")
     .select()
-    .eq("id", id)
-    .single();
+    .eq("email", email);
 
   if (error) throw new Error(error.message);
   return data;

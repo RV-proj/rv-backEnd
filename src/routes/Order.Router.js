@@ -16,6 +16,6 @@ router.delete("/:id", orderController.deleteOrder);
 router.put("/:id", orderController.updateOrder);
 
 // get order by id
-router.get("/:id", orderController.getOrderId);
+router.get("/:email", orderController.getOrderId);
 
 export default router;
