@@ -64,7 +64,7 @@ async function updatedOrder(id, updatedData) {
   return data;
 }
 
-// get user by email
+// get order by email
 async function filterOrder(email) {
   const { data, error } = await supabase
     .from("orders")

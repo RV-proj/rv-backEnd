@@ -7,9 +7,6 @@ import reviewRoute from "../src/routes/Review.Routes.js";
 import orderRoute from "../src/routes/Order.Router.js";
 import userRoute from "../src/routes/User.Route.js";
 
-// NOTE route for auth js remove this if being used
-// import authRoute from "../src/routes/Auth.Router.js";
-
 // NOTE route for tiers js remove this if being used
 // import tiresRoute from "./routes/Tiers.Routes.js";
 
@@ -37,10 +34,6 @@ app.use("/order", orderRoute);
 
 // user
 app.use("/user", userRoute);
-
-// auth
-// NOTE auth is not in use remove this comment when being used
-// app.use("/auth", authRoute);
 
 // tiers
 // NOTE tiers is not in use remove this comment when being used
