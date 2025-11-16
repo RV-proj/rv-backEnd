@@ -14,7 +14,13 @@ import userRoute from "../src/routes/User.Route.js";
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // your frontend
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());

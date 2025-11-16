@@ -29,7 +29,7 @@ async function createOrder(
       size,
       quality,
       deliveryAddress,
-      price,  
+      price,
       status,
       productName
     )
@@ -64,13 +64,12 @@ async function updatedOrder(id, updatedData) {
   return data;
 }
 
-// get user by id
-async function singleOrder(id) {
+// get order by email
+async function filterOrder(email) {
   const { data, error } = await supabase
     .from("orders")
-    .select()
-    .eq("id", id)
-    .single();
+    .select("*")
+    .eq("email", email);
 
   if (error) throw new Error(error.message);
   return data;
@@ -81,5 +80,5 @@ export default {
   createOrder,
   deleteOrder,
   updatedOrder,
-  singleOrder,
+  filterOrder,
 };
