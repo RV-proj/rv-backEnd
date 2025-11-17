@@ -9,14 +9,32 @@ async function getAllUser() {
 }
 
 // post
-async function postUser(userName, email) {
-  const { data, error } = await supabase
+async function postUser({ userName, email }) {
+  // Check if user already exists
+  const { data: existingUser, error: checkError } = await supabase
     .from("users")
-    .insert(userName, email)
-    .select();
+    .select("*")
+    .eq("email", email)
+    .single();
 
-  if (error) throw new Error(error.message);
-  return data;
+  if (checkError && checkError.code !== "PGRST116") {
+    throw new Error(checkError.message);
+  }
+
+  if (existingUser) {
+    return existingUser;
+  }
+
+  // Else Create user
+  const { data: createdUser, error: insertError } = await supabase
+    .from("users")
+    .insert({ userName, email })
+    .select()
+    .single();
+
+  if (insertError) throw new Error(insertError.message);
+
+  return createdUser;
 }
 
 // delete

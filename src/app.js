@@ -7,7 +7,7 @@ import Stripe from "stripe";
 
 // Import routes
 import reviewRoute from "../src/routes/Review.Routes.js";
-import orderRoute from "../src/routes/Order.Router.js";
+import orderRoute from "./routes/Order.Routes.js";
 import userRoute from "../src/routes/User.Route.js";
 
 // NOTE route for tiers js remove this if being used
