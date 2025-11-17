@@ -79,12 +79,17 @@ async function updateOrder(req, res, next) {
   }
 }
 
-// get order by id
-async function getOrderId(req, res, next) {
+// get order by email
+async function getOrderEmail(req, res, next) {
   try {
-    const { id } = req.params;
+    const email = req.query.email?.trim();
 
-    const order = await orderModel.singleOrder(id);
+    if (!email || email.trim() === "") {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const order = await orderModel.filterOrder(email);
+
     res.status(200).json(order);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -92,4 +97,4 @@ async function getOrderId(req, res, next) {
   }
 }
 
-export default { getOrder, postOrder, deleteOrder, updateOrder, getOrderId };
+export default { getOrder, postOrder, deleteOrder, updateOrder, getOrderEmail };

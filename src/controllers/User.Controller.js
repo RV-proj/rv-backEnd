@@ -23,6 +23,14 @@ async function postUser(req, res, next) {
         .json({ message: "userName and email are required" });
     }
 
+    const existingUser = await UserModel.findByEmailOrUserName(email, userName);
+
+    if (existingUser) {
+      return res
+        .status(100)
+        .json({ message: "User with this email or userName already exists" });
+    }
+
     const newUser = await UserModel.postUser({ userName, email });
 
     res.status(201).json(newUser);
