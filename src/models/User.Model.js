@@ -61,23 +61,9 @@ async function getSingleUser(id) {
   return data;
 }
 
-// if user already exist
-export async function findByEmailOrUserName(email, userName) {
-  const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .or(`email.eq.${email},userName.eq.${userName}`)
-    .limit(1);
-
-  if (error) throw new Error(error.message);
-
-  return data.length > 0 ? data[0] : null;
-}
-
 export default {
   getAllUser,
   postUser,
   deleteUser,
   getSingleUser,
-  findByEmailOrUserName,
 };
