@@ -10,7 +10,6 @@ async function getAllUser() {
 
 // post
 async function postUser({ userName, email }) {
-  console.log("post user", userName, email);
   // Check if user already exists
   const { data: existingUser, error: checkError } = await supabase
     .from("users")
@@ -23,7 +22,6 @@ async function postUser({ userName, email }) {
   }
 
   if (existingUser) {
-    console.log("User already exists");
     return existingUser;
   }
 
@@ -35,8 +33,6 @@ async function postUser({ userName, email }) {
     .single();
 
   if (insertError) throw new Error(insertError.message);
-
-  console.log("User Created");
 
   return createdUser;
 }
