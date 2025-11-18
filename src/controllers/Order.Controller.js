@@ -12,9 +12,14 @@ async function getOrder(req, res, next) {
   }
 }
 
+// stripe controller
 // post
 async function postOrder(req, res, next) {
   try {
+    // get stripe data
+    const stripe = req.stripe;
+
+    // order body
     const {
       email,
       name,
@@ -26,8 +31,17 @@ async function postOrder(req, res, next) {
       startDate,
       endDate,
       quantity,
+      amount_paid,
     } = req.body;
 
+    // stripe paymentIntent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount_paid * 100,
+      currency: "usd",
+      metaData: { email, name },
+    });
+
+    // creating order
     const newOrder = await orderModel.createOrder({
       email,
       name,
@@ -39,9 +53,15 @@ async function postOrder(req, res, next) {
       startDate,
       endDate,
       quantity,
+      amount_paid,
+      // stripe order create
+      stripe_payment_intent: paymentIntent.id,
+      status: "pending",
     });
 
-    res.status(201).json(newOrder);
+    res
+      .status(201)
+      .json({ order: newOrder, clientSecret: paymentIntent.client_secret });
   } catch (err) {
     res.status(500).json({ message: err.message });
     next(err);

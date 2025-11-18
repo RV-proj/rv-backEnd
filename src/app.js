@@ -31,6 +31,12 @@ app.use(helmet());
 // call stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// stripe middleware
+app.use((req, res, next) => {
+  req.stripe = stripe;
+  next();
+});
+
 // Routes
 // review
 app.use("/review", reviewRoute);
