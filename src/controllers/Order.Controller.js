@@ -12,9 +12,14 @@ async function getOrder(req, res, next) {
   }
 }
 
+// SECTION stripe controller
 // post
 async function postOrder(req, res, next) {
   try {
+    // get stripe data
+    const stripe = req.stripe;
+
+    // order body
     const {
       email,
       name,
@@ -26,22 +31,31 @@ async function postOrder(req, res, next) {
       startDate,
       endDate,
       quantity,
+      amount_paid,
     } = req.body;
 
-    const newOrder = await orderModel.createOrder({
-      email,
-      name,
-      phone,
-      size,
-      quality,
-      deliveryAddress,
-      price,
-      startDate,
-      endDate,
-      quantity,
+    // stripe payment data
+    const paymentData = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: { name: "RV Booking Deposit" },
+            unit_amount: amount_paid * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      shipping_address_collection: { allowed_countries: ["US"] },
+      success_url: "http://localhost:3000/order",
+      cancel_url: "http://localhost:3000/",
     });
 
-    res.status(201).json(newOrder);
+    res.status(201).json({
+      url: paymentData.url,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
     next(err);
@@ -97,4 +111,10 @@ async function getOrderEmail(req, res, next) {
   }
 }
 
-export default { getOrder, postOrder, deleteOrder, updateOrder, getOrderEmail };
+export default {
+  getOrder,
+  postOrder,
+  deleteOrder,
+  updateOrder,
+  getOrderEmail,
+};

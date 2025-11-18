@@ -68,4 +68,21 @@ async function getSingleUser(req, res, next) {
   }
 }
 
-export default { getUsers, postUser, deleteUser, getSingleUser };
+// get user by email
+async function getUserEmail(req, res, next) {
+  try {
+    const email = req.query.email?.trim();
+
+    if (!email || email.trim() === "") {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await UserModel.filterUserEmail (email);
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+    next(err);
+  }
+}
+
+export default { getUsers, postUser, deleteUser, getSingleUser, getUserEmail };

@@ -3,6 +3,9 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
+import Stripe from "stripe";
+
+// Import routes
 import reviewRoute from "../src/routes/Review.Routes.js";
 import orderRoute from "./routes/Order.Routes.js";
 import userRoute from "../src/routes/User.Route.js";
@@ -24,6 +27,15 @@ app.use(
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
+
+// call stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// stripe middleware
+app.use((req, res, next) => {
+  req.stripe = stripe;
+  next();
+});
 
 // Routes
 // review

@@ -9,32 +9,10 @@ async function getAllOrder() {
 }
 
 // post
-async function createOrder(
-  email,
-  name,
-  phone,
-  size,
-  quality,
-  deliveryAddress,
-  price,
-  startDate,
-  endDate,
-  quantity
-) {
+async function createOrder(orderData) {
   const { data, error } = await supabase
     .from("orders")
-    .insert(
-      email,
-      name,
-      phone,
-      size,
-      quality,
-      deliveryAddress,
-      price,
-      startDate,
-      endDate,
-      quantity
-    )
+    .insert(orderData)
     .select();
 
   if (error) throw new Error(error.message);
