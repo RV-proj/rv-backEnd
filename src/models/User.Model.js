@@ -61,9 +61,21 @@ async function getSingleUser(id) {
   return data;
 }
 
+// get user by email
+async function filterUserEmail(email) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email);
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 export default {
   getAllUser,
   postUser,
   deleteUser,
   getSingleUser,
+  filterUserEmail,
 };
