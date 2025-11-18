@@ -12,7 +12,7 @@ async function getUsers(req, res, next) {
   }
 }
 
-// post
+// Post
 async function postUser(req, res, next) {
   try {
     const { userName, email } = req.body;
@@ -22,21 +22,12 @@ async function postUser(req, res, next) {
         .status(400)
         .json({ message: "userName and email are required" });
     }
-
-    const existingUser = await UserModel.findByEmailOrUserName(email, userName);
-
-    if (existingUser) {
-      return res
-        .status(100)
-        .json({ message: "User with this email or userName already exists" });
-    }
-
-    const newUser = await UserModel.postUser({ userName, email });
-
-    res.status(201).json(newUser);
+    const user = await UserModel.postUser({ userName, email });
+    const status = user.created_at ? 201 : 200;
+    return res.status(status).json(user);
   } catch (err) {
-    res.status(500).json({ message: err.message });
     next(err);
+    return res.status(500).json({ message: err.message });
   }
 }
 
