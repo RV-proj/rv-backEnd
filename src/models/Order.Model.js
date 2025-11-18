@@ -12,7 +12,7 @@ async function getAllOrder() {
 async function createOrder(orderData) {
   const { data, error } = await supabase
     .from("orders")
-    .insert([orderData])
+    .insert(orderData)
     .select();
 
   if (error) throw new Error(error.message);

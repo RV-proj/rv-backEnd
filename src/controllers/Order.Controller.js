@@ -12,7 +12,7 @@ async function getOrder(req, res, next) {
   }
 }
 
-// stripe controller
+// SECTION stripe controller
 // post
 async function postOrder(req, res, next) {
   try {
@@ -34,34 +34,28 @@ async function postOrder(req, res, next) {
       amount_paid,
     } = req.body;
 
-    // stripe paymentIntent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount_paid * 100,
-      currency: "usd",
-      metaData: { email, name },
+    // stripe payment data
+    const paymentData = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: { name: "RV Booking Deposit" },
+            unit_amount: amount_paid * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      shipping_address_collection: { allowed_countries: ["US"] },
+      success_url: "http://localhost:3000/order",
+      cancel_url: "http://localhost:3000/",
     });
 
-    // creating order
-    const newOrder = await orderModel.createOrder({
-      email,
-      name,
-      phone,
-      size,
-      quality,
-      deliveryAddress,
-      price,
-      startDate,
-      endDate,
-      quantity,
-      amount_paid,
-      // stripe order create
-      stripe_payment_intent: paymentIntent.id,
-      status: "pending",
+    res.status(201).json({
+      url: paymentData.url,
     });
-
-    res
-      .status(201)
-      .json({ order: newOrder, clientSecret: paymentIntent.client_secret });
   } catch (err) {
     res.status(500).json({ message: err.message });
     next(err);
@@ -117,4 +111,10 @@ async function getOrderEmail(req, res, next) {
   }
 }
 
-export default { getOrder, postOrder, deleteOrder, updateOrder, getOrderEmail };
+export default {
+  getOrder,
+  postOrder,
+  deleteOrder,
+  updateOrder,
+  getOrderEmail,
+};
