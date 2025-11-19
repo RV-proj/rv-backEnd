@@ -21,6 +21,7 @@ async function postOrder(req, res, next) {
 
     // order body
     const {
+      id,
       email,
       name,
       phone,
@@ -49,12 +50,14 @@ async function postOrder(req, res, next) {
       ],
       mode: "payment",
       shipping_address_collection: { allowed_countries: ["US"] },
+      phone_number_collection: { enabled: true },
       success_url: "http://localhost:3000/order",
       cancel_url: "http://localhost:3000/",
     });
 
     res.status(201).json({
       url: paymentData.url,
+      sessionId: paymentData.id,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
