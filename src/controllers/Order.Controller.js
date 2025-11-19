@@ -65,16 +65,20 @@ async function verifyPayment(req, res, next) {
       return res.status(400).json({ message: "Payment not completed" });
     }
 
+    // console.log(session);
+
     const stripePhone = session.customer_details?.phone;
+    const stripeAddress = session.customer_details?.address;
+    const stripeName = session.customer_details?.name;
 
     const savedOrder = await orderModel.createOrder({
       ...orderData,
-      phone: stripePhone ?? orderData.phone,
       // paymentId: sessionId,
+      phone: stripePhone ?? orderData.phone,
+      deliveryAddress: stripeAddress ?? orderData.stripeAddress,
+      name: stripeName ?? orderData.name,
       amount_paid: session.amount_total / 100,
     });
-
-    console.log(savedOrder);
 
     res.json({ message: "Order saved", order: savedOrder });
   } catch (err) {
