@@ -20,20 +20,7 @@ async function postOrder(req, res, next) {
     const stripe = req.stripe;
 
     // order body
-    const {
-      id,
-      email,
-      name,
-      phone,
-      size,
-      quality,
-      deliveryAddress,
-      price,
-      startDate,
-      endDate,
-      quantity,
-      amount_paid,
-    } = req.body;
+    const { amount_paid } = req.body;
 
     // stripe payment data
     const paymentData = await stripe.checkout.sessions.create({
@@ -51,7 +38,8 @@ async function postOrder(req, res, next) {
       mode: "payment",
       shipping_address_collection: { allowed_countries: ["US"] },
       phone_number_collection: { enabled: true },
-      success_url: "http://localhost:3000/order",
+      // FIXME change this to order route note: "http://localhost:3000/order",
+      success_url: "http://localhost:3000/testpage",
       cancel_url: "http://localhost:3000/",
     });
 
@@ -59,6 +47,36 @@ async function postOrder(req, res, next) {
       url: paymentData.url,
       sessionId: paymentData.id,
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+    next(err);
+  }
+}
+
+// verify payment
+async function verifyPayment(req, res, next) {
+  try {
+    const stripe = req.stripe;
+    const { sessionId, orderData } = req.body;
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status !== "paid") {
+      return res.status(400).json({ message: "Payment not completed" });
+    }
+
+    const stripePhone = session.customer_details?.phone;
+
+    const savedOrder = await orderModel.createOrder({
+      ...orderData,
+      phone: stripePhone ?? orderData.phone,
+      // paymentId: sessionId,
+      amount_paid: session.amount_total / 100,
+    });
+
+    console.log(savedOrder);
+
+    res.json({ message: "Order saved", order: savedOrder });
   } catch (err) {
     res.status(500).json({ message: err.message });
     next(err);
@@ -120,4 +138,5 @@ export default {
   deleteOrder,
   updateOrder,
   getOrderEmail,
+  verifyPayment,
 };
