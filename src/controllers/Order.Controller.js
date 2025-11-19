@@ -66,6 +66,7 @@ async function verifyPayment(req, res, next) {
     }
 
     // console.log(session);
+    // console.log(session.payment_intent);
 
     const stripePhone = session.customer_details?.phone;
     const stripeAddress = session.customer_details?.address;
@@ -73,10 +74,10 @@ async function verifyPayment(req, res, next) {
 
     const savedOrder = await orderModel.createOrder({
       ...orderData,
-      // paymentId: sessionId,
       phone: stripePhone ?? orderData.phone,
       deliveryAddress: stripeAddress ?? orderData.stripeAddress,
       name: stripeName ?? orderData.name,
+      id: session.payment_intent,
       amount_paid: session.amount_total / 100,
     });
 
