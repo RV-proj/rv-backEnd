@@ -6,12 +6,12 @@ import helmet from "helmet";
 import Stripe from "stripe";
 
 // Import routes
-import reviewRoute from "../src/routes/Review.Routes.js";
 import orderRoute from "./routes/Order.Routes.js";
 import userRoute from "../src/routes/User.Route.js";
 
-// NOTE route for tiers js remove this if being used
+// NOTE route for tiers reviewroute js remove this if being used
 // import tiresRoute from "./routes/Tiers.Routes.js";
+// import reviewRoute from "../src/routes/Review.Routes.js";
 
 // Initialize Express app
 const app = express();
@@ -39,7 +39,8 @@ app.use((req, res, next) => {
 
 // Routes
 // review
-app.use("/review", reviewRoute);
+// NOTE review is not in use remove this comment when being used
+// app.use("/review", reviewRoute);
 
 // order
 app.use("/order", orderRoute);
