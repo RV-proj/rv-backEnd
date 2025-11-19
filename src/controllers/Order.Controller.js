@@ -74,9 +74,9 @@ async function verifyPayment(req, res, next) {
 
     const savedOrder = await orderModel.createOrder({
       ...orderData,
-      phone: stripePhone ?? orderData.phone,
-      deliveryAddress: stripeAddress ?? orderData.stripeAddress,
-      name: stripeName ?? orderData.name,
+      phone: stripePhone,
+      deliveryAddress: stripeAddress,
+      name: stripeName,
       id: session.payment_intent,
       amount_paid: session.amount_total / 100,
     });
