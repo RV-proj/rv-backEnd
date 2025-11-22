@@ -137,6 +137,26 @@ async function getOrderEmail(req, res, next) {
   }
 }
 
+// update status
+async function updateStatus(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "ID is required" });
+    }
+    console.log(id, status);
+
+    const updatedStatus = await orderModel.updateStatus(id, status);
+
+    res.status(200).json(updatedStatus);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+    next(err);
+  }
+}
+
 export default {
   getOrder,
   postOrder,
@@ -144,4 +164,5 @@ export default {
   updateOrder,
   getOrderEmail,
   verifyPayment,
+  updateStatus,
 };

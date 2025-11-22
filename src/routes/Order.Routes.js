@@ -21,4 +21,7 @@ router.put("/:id", orderController.updateOrder);
 // get order by email
 router.get("/email", orderController.getOrderEmail);
 
+// update status
+router.put("/status/:id", orderController.updateStatus);
+
 export default router;

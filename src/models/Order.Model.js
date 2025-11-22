@@ -55,10 +55,24 @@ async function filterOrder(email) {
   return data;
 }
 
+// update status
+async function updateStatus(id, status) {
+  const { data, error } = await supabase
+    .from("orders")
+    .update({ status })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 export default {
   getAllOrder,
   createOrder,
   deleteOrder,
   updatedOrder,
   filterOrder,
+  updateStatus,
 };
