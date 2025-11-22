@@ -74,9 +74,9 @@ async function verifyPayment(req, res, next) {
 
     const savedOrder = await orderModel.createOrder({
       ...orderData,
-      phone: stripePhone ?? orderData.phone,
-      deliveryAddress: stripeAddress ?? orderData.stripeAddress,
-      name: stripeName ?? orderData.name,
+      phone: stripePhone,
+      deliveryAddress: stripeAddress,
+      name: stripeName,
       id: session.payment_intent,
       amount_paid: session.amount_total / 100,
     });
@@ -137,6 +137,26 @@ async function getOrderEmail(req, res, next) {
   }
 }
 
+// update status
+async function updateStatus(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "ID is required" });
+    }
+    console.log(id, status);
+
+    const updatedStatus = await orderModel.updateStatus(id, status);
+
+    res.status(200).json(updatedStatus);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+    next(err);
+  }
+}
+
 export default {
   getOrder,
   postOrder,
@@ -144,4 +164,5 @@ export default {
   updateOrder,
   getOrderEmail,
   verifyPayment,
+  updateStatus,
 };
