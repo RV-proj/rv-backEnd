@@ -65,7 +65,7 @@ async function getSingleUser(id) {
 async function filterUserEmail(email) {
   const { data, error } = await supabase
     .from("users")
-    .select("*")
+    .select("id")
     .eq("email", email);
 
   if (error) throw new Error(error.message);
