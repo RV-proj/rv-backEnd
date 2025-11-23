@@ -21,16 +21,20 @@ async function postOrder(req, res, next) {
 
     // order body
     const { amount_paid } = req.body;
+    const { email } = req.body;
 
     // stripe payment data
     const paymentData = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
+      customer_email: email,
+      invoice_creation: { enabled: true },
+
       line_items: [
         {
           price_data: {
             currency: "usd",
             product_data: { name: "RV Booking Deposit" },
-            unit_amount: amount_paid * 100,
+            unit_amount: Math.round(amount_paid * 100),
           },
           quantity: 1,
         },
@@ -38,8 +42,7 @@ async function postOrder(req, res, next) {
       mode: "payment",
       shipping_address_collection: { allowed_countries: ["US"] },
       phone_number_collection: { enabled: true },
-      // FIXME change this to order route note: "http://localhost:3000/order",
-      success_url: "http://localhost:3000/testpage",
+      success_url: "http://localhost:3000/order",
       cancel_url: "http://localhost:3000/",
     });
 
