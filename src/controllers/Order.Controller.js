@@ -21,10 +21,13 @@ async function postOrder(req, res, next) {
 
     // order body
     const { amount_paid } = req.body;
+    const { email } = req.body;
 
     // stripe payment data
     const paymentData = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
+      customer_email: email,
+      invoice_creation: { enabled: true },
       line_items: [
         {
           price_data: {
