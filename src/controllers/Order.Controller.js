@@ -62,6 +62,8 @@ async function verifyPayment(req, res, next) {
     const stripe = req.stripe;
     const { sessionId, orderData } = req.body;
 
+    console.log(sessionId, orderData);
+
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status !== "paid") {
