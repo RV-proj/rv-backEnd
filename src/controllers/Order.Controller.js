@@ -62,7 +62,7 @@ async function postOrder(req, res, next) {
 // webhook
 async function webhook(req, res, next) {
   try {
-    console.log("RAW BODY:", req.body);
+    console.log(req.body);
 
     // get stripe data
     const stripe = req.stripe;
