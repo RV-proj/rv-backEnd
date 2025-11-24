@@ -1,3 +1,4 @@
+import { sendEmail } from "../services/email/emailEngine.js";
 import supabase from "../config/supabase.js";
 
 // get
@@ -34,7 +35,13 @@ async function postUser({ userName, email }) {
 
   if (insertError) throw new Error(insertError.message);
 
-  return createdUser;
+  const newUser = createdUser;
+  await sendEmail("welcome", {
+    to: email,
+    subject: "Welcome Aboard!",
+    data: { username: userName },
+  });
+  return newUser;
 }
 
 // delete
