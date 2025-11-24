@@ -77,6 +77,9 @@ async function webhook(req, res, next) {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
 
+      const invoice = await stripe.invoices.retrieve(session.invoice);
+      await stripe.invoices.sendInvoice(invoice.id);
+
       const stripePhone = session.customer_details?.phone;
       const stripeAddress = session.customer_details?.address;
       const stripeName = session.customer_details?.name;
