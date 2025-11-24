@@ -26,7 +26,7 @@ app.use(
   })
 );
 
-// webhook api calling
+// webhook api calling for payment
 app.post(
   "/order/webhook",
   bodyParser.raw({ type: "application/json" }),
