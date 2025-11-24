@@ -20,8 +20,7 @@ async function postOrder(req, res, next) {
     const stripe = req.stripe;
 
     // order body
-    const { amount_paid } = req.body;
-    const { email } = req.body;
+    const { amount_paid, email, orderData } = req.body;
 
     // stripe payment data
     const paymentData = await stripe.checkout.sessions.create({
@@ -44,11 +43,15 @@ async function postOrder(req, res, next) {
       phone_number_collection: { enabled: true },
       success_url: "http://localhost:3000/order",
       cancel_url: "http://localhost:3000/",
+
+      metadata: {
+        order: JSON.stringify(orderData),
+      },
     });
 
     res.status(201).json({
       url: paymentData.url,
-      sessionId: paymentData.id,
+      // sessionId: paymentData.id,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -56,42 +59,90 @@ async function postOrder(req, res, next) {
   }
 }
 
-// verify payment
-async function verifyPayment(req, res, next) {
+// webhook
+async function webhook(req, res, next) {
   try {
+    console.log("RAW BODY:", req.body);
+
+    // get stripe data
     const stripe = req.stripe;
-    const { sessionId, orderData } = req.body;
 
-    console.log(sessionId, orderData);
+    const signature = req.headers["stripe-signature"];
+    const event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
 
-    if (session.payment_status !== "paid") {
-      return res.status(400).json({ message: "Payment not completed" });
+      const stripePhone = session.customer_details?.phone;
+      const stripeAddress = session.customer_details?.address;
+      const stripeName = session.customer_details?.name;
+      const stripeEmail = session.customer_details?.email;
+
+      const frontendOrder = JSON.parse(session.metadata.order);
+
+      const orderData = {
+        id: session.payment_intent,
+        amount_paid: session.amount_total / 100,
+        phone: stripePhone,
+        deliveryAddress: stripeAddress,
+        name: stripeName,
+        email: stripeEmail,
+        size: frontendOrder.size,
+        quality: frontendOrder.quality,
+        price: frontendOrder.price,
+        startDate: frontendOrder.startDate,
+        endDate: frontendOrder.endDate,
+      };
+      await orderModel.createOrder(orderData);
     }
 
-    // console.log(session);
-    // console.log(session.payment_intent);
-
-    const stripePhone = session.customer_details?.phone;
-    const stripeAddress = session.customer_details?.address;
-    const stripeName = session.customer_details?.name;
-
-    const savedOrder = await orderModel.createOrder({
-      ...orderData,
-      phone: stripePhone,
-      deliveryAddress: stripeAddress,
-      name: stripeName,
-      id: session.payment_intent,
-      amount_paid: session.amount_total / 100,
-    });
-
-    res.json({ message: "Order saved", order: savedOrder });
+    res.status(200).json({ received: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
     next(err);
   }
 }
+
+// verify payment // NOTE payment verification will use if needed alternative webhook used
+// async function verifyPayment(req, res, next) {
+//   try {
+//     const stripe = req.stripe;
+//     const { sessionId, orderData } = req.body;
+
+//     console.log(sessionId, orderData);
+
+//     const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+//     if (session.payment_status !== "paid") {
+//       return res.status(400).json({ message: "Payment not completed" });
+//     }
+
+//     // console.log(session);
+//     // console.log(session.payment_intent);
+
+//     const stripePhone = session.customer_details?.phone;
+//     const stripeAddress = session.customer_details?.address;
+//     const stripeName = session.customer_details?.name;
+
+//     const savedOrder = await orderModel.createOrder({
+//       ...orderData,
+//       phone: stripePhone,
+//       deliveryAddress: stripeAddress,
+//       name: stripeName,
+//       id: session.payment_intent,
+//       amount_paid: session.amount_total / 100,
+//     });
+
+//     res.json({ message: "Order saved", order: savedOrder });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//     next(err);
+//   }
+// }
 
 // delete
 async function deleteOrder(req, res, next) {
@@ -168,6 +219,9 @@ export default {
   deleteOrder,
   updateOrder,
   getOrderEmail,
-  verifyPayment,
   updateStatus,
+  webhook,
+
+  // NOTE use this if verifyPayment used
+  // verifyPayment,
 };
