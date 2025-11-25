@@ -34,7 +34,7 @@ app.post(
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000 || https://rv-front-end-one.vercel.app/",
     credentials: true,
   })
 );
@@ -74,3 +74,4 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
+
