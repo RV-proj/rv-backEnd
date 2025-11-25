@@ -8,6 +8,8 @@ import Stripe from "stripe";
 // Import routes
 import orderRoute from "./routes/Order.Routes.js";
 import userRoute from "../src/routes/User.Route.js";
+import bodyParser from "body-parser";
+import orderController from "../src/controllers/Order.Controller.js";
 
 // NOTE route for tiers reviewroute js remove this if being used
 // import tiresRoute from "./routes/Tiers.Routes.js";
@@ -16,10 +18,23 @@ import userRoute from "../src/routes/User.Route.js";
 // Initialize Express app
 const app = express();
 
+// webhook api calling for payment
+app.post(
+  "/order/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res, next) => {
+    console.log(req);
+
+    req.stripe = stripe;
+    next();
+  },
+  orderController.webhook
+);
+
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:3000", // your frontend
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );

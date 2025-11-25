@@ -9,8 +9,8 @@ router.get("/", orderController.getOrder);
 // post
 router.post("/", orderController.postOrder);
 
-// verify payment
-router.post("/verify", orderController.verifyPayment);
+// verify payment  // NOTE use this if verifyPayment used
+// router.post("/verify", orderController.verifyPayment);
 
 // delete
 router.delete("/:id", orderController.deleteOrder);
