@@ -41,8 +41,8 @@ async function postOrder(req, res, next) {
       mode: "payment",
       shipping_address_collection: { allowed_countries: ["US"] },
       phone_number_collection: { enabled: true },
-      success_url: "http://localhost:3000/order" || "https://rv-front-end-one.vercel.app/order",
-      cancel_url: "http://localhost:3000/" || "https://rv-front-end-one.vercel.app/",
+      success_url: "https://rv-front-end-one.vercel.app/order",
+      cancel_url: "https://rv-front-end-one.vercel.app/",
 
       metadata: {
         order: JSON.stringify(orderData),
