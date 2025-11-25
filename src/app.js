@@ -18,23 +18,25 @@ import orderController from "../src/controllers/Order.Controller.js";
 // Initialize Express app
 const app = express();
 
+// webhook api calling for payment
+app.post(
+  "/order/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res, next) => {
+    console.log(req);
+
+    req.stripe = stripe;
+    next();
+  },
+  orderController.webhook
+);
+
 // Middleware
 app.use(
   cors({
     origin: "http://localhost:3000", // your frontend
     credentials: true,
   })
-);
-
-// webhook api calling for payment
-app.post(
-  "/order/webhook",
-  bodyParser.raw({ type: "application/json" }),
-  (req, res, next) => {
-    req.stripe = stripe;
-    next();
-  },
-  orderController.webhook
 );
 
 app.use(express.json());
