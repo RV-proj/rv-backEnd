@@ -4,12 +4,15 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import Stripe from "stripe";
+import rateLimit from "express-rate-limit";
+import jwt from "jsonwebtoken";
 
 // Import routes
 import orderRoute from "./routes/Order.Routes.js";
 import userRoute from "../src/routes/User.Route.js";
 import bodyParser from "body-parser";
 import orderController from "../src/controllers/Order.Controller.js";
+import verifyToken from "./middlewares/Token.Middlewares.js";
 
 // NOTE route for tiers reviewroute js remove this if being used
 // import tiresRoute from "./routes/Tiers.Routes.js";
@@ -17,6 +20,15 @@ import orderController from "../src/controllers/Order.Controller.js";
 
 // Initialize Express app
 const app = express();
+
+// use limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+
+// Apply rate limiter to all requests
+app.use(limiter);
 
 // webhook api calling for payment
 app.post(
@@ -56,6 +68,11 @@ app.use((req, res, next) => {
 // review
 // NOTE review is not in use remove this comment when being used
 // app.use("/review", reviewRoute);
+
+const token = jwt.sign({ id: "testUser" }, process.env.JWT_SECRET, {
+  expiresIn: "1h",
+});
+console.log("Test JWT Token:", token);
 
 // order
 app.use("/order", orderRoute);
