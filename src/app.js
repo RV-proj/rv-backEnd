@@ -12,7 +12,6 @@ import orderRoute from "./routes/Order.Routes.js";
 import userRoute from "../src/routes/User.Route.js";
 import bodyParser from "body-parser";
 import orderController from "../src/controllers/Order.Controller.js";
-import { verifyToken } from "./middlewares/Token.Middlewares.js";
 
 // NOTE route for tiers reviewroute js remove this if being used
 // import tiresRoute from "./routes/Tiers.Routes.js";
@@ -26,9 +25,6 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
 });
-
-// Apply rate limiter to all requests
-app.use(limiter);
 
 // webhook api calling for payment
 app.post(
@@ -57,6 +53,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
 app.use(cookieParser());
+app.use(limiter);
 
 // call stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -73,15 +70,10 @@ app.use((req, res, next) => {
 // app.use("/review", reviewRoute);
 
 // order
-app.use("/order", verifyToken, orderRoute);
+app.use("/order", orderRoute);
 
 // user
 app.use("/user", userRoute);
-
-app.get("/", (req, res) => {
-  const token = req.cookies?.token;
-  res.send(token);
-});
 
 // tiers
 // NOTE tiers is not in use remove this comment when being used

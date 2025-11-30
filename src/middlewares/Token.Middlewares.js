@@ -13,7 +13,7 @@ export function verifyToken(req, res, next) {
 
   const token = authHeader.substring(7);
 
-  // console.log("Token received:", token ? "Yes" : "No");
+  console.log("token", token);
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

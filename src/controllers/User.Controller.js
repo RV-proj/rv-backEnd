@@ -1,5 +1,4 @@
 import generateAccessToken from "../config/generateAccessToken.js";
-import jwt from "jsonwebtoken";
 import UserModel from "../models/User.Model.js";
 
 // get
