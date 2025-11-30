@@ -1,3 +1,5 @@
+import generateAccessToken from "../config/generateAccessToken.js";
+import jwt from "jsonwebtoken";
 import UserModel from "../models/User.Model.js";
 
 // get
@@ -24,10 +26,30 @@ async function postUser(req, res, next) {
     }
     const user = await UserModel.postUser({ userName, email });
     const status = user.created_at ? 201 : 200;
-    return res.status(status).json(user);
+
+    const token = generateAccessToken({
+      id: user.id,
+      userName: user.userName,
+      email: user.email,
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+
+    return res.status(status).json({
+      user,
+      token,
+    });
   } catch (err) {
     next(err);
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      message: err.message,
+    });
   }
 }
 

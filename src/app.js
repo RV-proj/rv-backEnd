@@ -5,14 +5,14 @@ import morgan from "morgan";
 import helmet from "helmet";
 import Stripe from "stripe";
 import rateLimit from "express-rate-limit";
-import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 
 // Import routes
 import orderRoute from "./routes/Order.Routes.js";
 import userRoute from "../src/routes/User.Route.js";
 import bodyParser from "body-parser";
 import orderController from "../src/controllers/Order.Controller.js";
-import verifyToken from "./middlewares/Token.Middlewares.js";
+import { verifyToken } from "./middlewares/Token.Middlewares.js";
 
 // NOTE route for tiers reviewroute js remove this if being used
 // import tiresRoute from "./routes/Tiers.Routes.js";
@@ -48,12 +48,15 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
+app.use(cookieParser());
 
 // call stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -69,16 +72,16 @@ app.use((req, res, next) => {
 // NOTE review is not in use remove this comment when being used
 // app.use("/review", reviewRoute);
 
-const token = jwt.sign({ id: "testUser" }, process.env.JWT_SECRET, {
-  expiresIn: "1h",
-});
-console.log("Test JWT Token:", token);
-
 // order
-app.use("/order", orderRoute);
+app.use("/order", verifyToken, orderRoute);
 
 // user
 app.use("/user", userRoute);
+
+app.get("/", (req, res) => {
+  const token = req.cookies?.token;
+  res.send(token);
+});
 
 // tiers
 // NOTE tiers is not in use remove this comment when being used
