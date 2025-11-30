@@ -1,10 +1,11 @@
 import express from "express";
 import orderController from "../controllers/Order.Controller.js";
+import { verifyToken } from "../middlewares/Token.Middlewares.js";
 
 const router = express.Router();
 
 // get
-router.get("/", orderController.getOrder);
+router.get("/", verifyToken, orderController.getOrder);
 
 // post
 router.post("/", orderController.postOrder);
@@ -19,7 +20,7 @@ router.delete("/:id", orderController.deleteOrder);
 router.put("/:id", orderController.updateOrder);
 
 // get order by email
-router.get("/email", orderController.getOrderEmail);
+router.get("/email", verifyToken, orderController.getOrderEmail);
 
 // update status
 router.put("/status/:id", orderController.updateStatus);
