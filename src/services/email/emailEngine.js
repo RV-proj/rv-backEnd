@@ -10,8 +10,8 @@ export async function sendEmail(type, { to, subject, data }) {
     }
     const html = templateFn(data);
     const result = await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: "rveedom411@gmail.com", //After adding domain to resend, remove hardcoded email
+      from: "support@rveedom.org",
+      to: to,
       subject: subject || type.replace("_", " "),
       html,
     });
