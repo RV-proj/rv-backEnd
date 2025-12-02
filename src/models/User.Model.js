@@ -1,4 +1,4 @@
-import { sendEmail } from "../services/email/emailEngine.js";
+import { sendEmail } from "../services/email/sendEmail.js";
 import supabase from "../config/supabase.js";
 
 // get

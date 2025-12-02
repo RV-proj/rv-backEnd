@@ -1,20 +1,35 @@
 import { resend } from "./resendClient.js";
-import { templates } from "./templates/index.js";
+
+import welcome from "./templates/welcome.js";
+import {
+  orderStatusUpdateTemplate,
+  orderCreateTemplate,
+} from "./templates/order.js";
+
+const templates = {
+  welcome,
+  order_status: orderStatusUpdateTemplate,
+  orderCreate: orderCreateTemplate,
+};
 
 export async function sendEmail(type, { to, subject, data }) {
+  console.log("Function Called");
   try {
     const templateFn = templates[type];
 
     if (!templateFn) {
       throw new Error(`Email template '${type}' not found`);
     }
+
     const html = templateFn(data);
+
     const result = await resend.emails.send({
       from: "support@rveedom.org",
-      to: to,
+      to,
       subject: subject || type.replace("_", " "),
       html,
     });
+
     return result;
   } catch (err) {
     console.error("Email error:", err);
