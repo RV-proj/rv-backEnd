@@ -4,6 +4,8 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import Stripe from "stripe";
+import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 
 // Import routes
 import orderRoute from "./routes/Order.Routes.js";
@@ -17,6 +19,12 @@ import orderController from "../src/controllers/Order.Controller.js";
 
 // Initialize Express app
 const app = express();
+
+// use limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
 
 // webhook api calling for payment
 app.post(
@@ -36,12 +44,16 @@ app.use(
   cors({
     origin: "https://rv-front-end-one.vercel.app",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
+app.use(cookieParser());
+app.use(limiter);
 
 // call stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);

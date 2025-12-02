@@ -1,3 +1,4 @@
+import { sendEmail } from "../services/email/sendEmail.js";
 import supabase from "../config/supabase.js";
 
 // get
@@ -16,6 +17,15 @@ async function createOrder(orderData) {
     .select();
 
   if (error) throw new Error(error.message);
+
+  const createdOrder = data[0];
+  console.log(createdOrder);
+  await sendEmail("orderCreate", {
+    to: createdOrder.email,
+    subject: `Order #${createdOrder.id}`,
+    data: createdOrder,
+  });
+
   return data;
 }
 
