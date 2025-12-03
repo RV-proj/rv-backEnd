@@ -31,9 +31,8 @@ app.post(
   "/order/webhook",
   bodyParser.raw({ type: "application/json" }),
   (req, res, next) => {
-    console.log(req);
-
     req.stripe = stripe;
+
     next();
   },
   orderController.webhook

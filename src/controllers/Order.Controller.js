@@ -1,4 +1,5 @@
 import orderModel from "../models/Order.Model.js";
+import { sendEmail } from "../services/email/sendEmail.js";
 
 // get
 async function getOrder(req, res, next) {
@@ -62,7 +63,7 @@ async function postOrder(req, res, next) {
 // webhook
 async function webhook(req, res, next) {
   try {
-    console.log(req.body);
+    // console.log(req.body);
 
     // get stripe data
     const stripe = req.stripe;
@@ -97,6 +98,7 @@ async function webhook(req, res, next) {
         startDate: frontendOrder.startDate,
         endDate: frontendOrder.endDate,
       };
+
       await orderModel.createOrder(orderData);
     }
 
